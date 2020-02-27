@@ -24,10 +24,18 @@ const UpdateMovieForm = props => {
     }, [props.movieList, id])
 
     const handleChanges = event => {
+        event.persist();
+        let value = event.target.value
+        if (event.target.name === "metascore") {
+            value = parseInt(value, 10);
+        }
+        if (event.target.name === "stars") {
+            value = value.split(',');
+        }
 
         setUpdatedMovie({
             ...updatedMovie,
-            [event.target.name]: event.target.value
+            [event.target.name]: value
         })
     }
 
@@ -35,6 +43,12 @@ const UpdateMovieForm = props => {
         event.preventDefault();
 
         console.log("This is updatedMovie before axios call: ", updatedMovie)
+
+        if (typeof updatedMovie.stars === 'string') {
+            const changedStarsUpdatedMovie = updatedMovie.split(',');
+            console.log("changedStarsUpdatedMovie", changedStarsUpdatedMovie);
+        }
+
         //make a put request to edit the item
         axios
             .put(`http://localhost:5000/api/movies/${id}`, updatedMovie)
@@ -76,6 +90,14 @@ const UpdateMovieForm = props => {
                     name="metascore"
                     onChange={handleChanges}
                     value={updatedMovie.metascore}
+                />
+
+                <label htmlFor="stars">Stars: </label>
+                <input 
+                    type="text"
+                    name="stars"
+                    onChange={handleChanges}
+                    value={updatedMovie.stars}
                 />
 
                 <button>Update Movie</button>
