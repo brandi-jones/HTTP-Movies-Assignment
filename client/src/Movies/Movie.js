@@ -20,20 +20,27 @@ function Movie( props) {
   };
 
 
-
-
-  // const item = props.movieList.find(
-  //   movie => `${movie.id}` === match.params.id
-  // )
-
-
-
   //handle update button
   const handleUpdate = (event) => {
     event.preventDefault();
     console.log("handleUpdate:", props)
     props.history.push(`/update-movie/${movie.id}`)
   }
+
+  //handle delete button
+const handleDelete = (event) => {
+  event.preventDefault();
+  axios
+    .delete(`http://localhost:5000/api/movies/${movie.id}`)
+    .then(response => {
+      console.log(response);
+      props.getMovieList();
+      props.history.push('/');
+    })
+    .catch(error => {
+      console.log("Error deleting movie:", error)
+    })
+}
 
   useEffect(() => {
     fetchMovie(match.params.id);
@@ -54,6 +61,11 @@ function Movie( props) {
       <div className='edit-button' onClick={handleUpdate}>
         Edit
       </div>
+
+      <div className='delete-button' onClick={handleDelete}>
+        Delete
+      </div>
+
     </div>
   );
 }
